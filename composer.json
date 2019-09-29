@@ -1,0 +1,29 @@
+{
+    "name": "joeyrush/laravel-seamless-translations",
+    "description": "Seamless translations for your laravel application. No JSON fields or modifying existing tables.. it just works.",
+    "authors": [
+        {
+            "name": "Joe Rushton",
+            "email": "joe_rushton@hotmail.co.uk",
+            "homepage": "https://joerushton.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/joeyrush/laravel-seamless-translations",
+    "license": "MIT",
+    "require": {
+        "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "JoeyRush\\SeamlessTranslations\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JoeyRush\\SeamlessTranslations\\ServiceProvider"
+            ]
+        }
+    }
+}
