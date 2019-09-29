@@ -59,7 +59,9 @@ class Post extends Model
 There is no additional API for retrieving, creating, updating or deleting translations because this all happens automatically when you work with eloquent based on the [current locale](https://laravel.com/docs/5.7/localization#configuring-the-locale).
 
 ## Setting the current locale
-Laravel provides a way to change the locale at runtime using `App::setLocale('es')` but this won't be persisted between requests. We provide an endpoint for persisting the locale via sessions: `/locale/{locale}`. E.g. /locale/es will put `es` into the session and the `CheckLocale` middleware will use this value with `App::setLocale()` on every web request.
+Laravel provides a way to change the locale at runtime using `App::setLocale('es')` but this won't be persisted between requests. We provide an endpoint for persisting the locale via sessions: `/locale/{locale}`.
+
+> E.g. /locale/es will put `es` (spanish) into the session and the `CheckLocale` middleware will use this value with `App::setLocale()` on every web request.
 
 ## Fetch specific language translations
 If you need to pull out translations for a locale other than the current locale, you can use a `locale()` query scope:
