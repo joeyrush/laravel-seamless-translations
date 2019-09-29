@@ -2,8 +2,8 @@
 
 namespace JoeyRush\SeamlessTranslations;
 
-use App\SeamlessTranslations\Commands\NewLocale;
-use App\SeamlessTranslations\Middleware\CheckLocale;
+use JoeyRush\SeamlessTranslations\Commands\NewLocale;
+use JoeyRush\SeamlessTranslations\Middleware\CheckLocale;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
