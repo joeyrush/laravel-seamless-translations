@@ -1,7 +1,7 @@
 <?php
 namespace JoeyRush\SeamlessTranslations\Traits;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -24,7 +24,7 @@ trait Translatable
         $table = $model->table;
         $primaryKey = $model->primaryKey;
         Builder::macro('whereTranslation', function ($column, $operator, $query = null) use ($table, $primaryKey) {
-            $locale = \App::getLocale();
+            $locale = $this->model->getQueryLocale() ?? \App::getLocale();
             if ($locale == config('app.fallback_locale')) {
                 return $this->where($column, $operator, $query);
             }
@@ -41,11 +41,12 @@ trait Translatable
                 ->whereColumn('related_id', "{$table}.{$primaryKey}")
                 ->take(1);
 
-            // @todo: update this to a whereRaw or something equivalent if possible
             $this->whereRaw(
                 "(" . $subQuery->toSql() . ") $operator ?",
                 array_merge($subQuery->getBindings(), [$query])
             );
+
+            return $this;
         });
     }
 
@@ -127,6 +128,11 @@ trait Translatable
     public function scopeLocale($query, string $locale)
     {
         $this->localeForQuery = $locale;
+    }
+
+    public function getQueryLocale()
+    {
+        return $this->localeForQuery;
     }
 
     /**

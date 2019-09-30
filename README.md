@@ -76,3 +76,29 @@ $posts = Post::locale('de')->with(['tags' => function ($query) {
 }]);
 ```
 
+## Filtering on translations
+A custom `whereTranslation()` method is available on any models using the Translatable trait, which provides an easy way of filtering queries based on the value of a translation:
+```php
+App::setLocale('de');
+
+$posts = Post::whereTranslation('title', 'LIKE', "%german search term%")->get();
+```
+
+Because we've set the app to `de` locale, this will generate the following SQL:
+```sql
+select * from `posts`
+where (
+    select `translation` from `translations_de`
+    where `related_table` = 'posts' and `related_field` = 'title' and `related_id` = `posts`.`id`
+    limit 1
+) LIKE '%german search term%'
+```
+
+If the current locale is the default (en) locale, then the same call will fallback to the normal `where()` method.
+
+Finally, to filter by a specific locale - rather than the current one:
+
+```php
+$posts = Post::locale('fr')->whereTranslation('body', 'foo bar baz')->get();
+```
+
