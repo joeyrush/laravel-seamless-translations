@@ -1,6 +1,7 @@
 <?php
 namespace JoeyRush\SeamlessTranslations\Traits;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +19,34 @@ trait Translatable
         static::updating([static::class, 'modelUpdatingCallback']);
         static::created([static::class, 'modelUpdatingCallback']);
         static::deleting([static::class, 'modelDeletingCallback']);
+
+        $model = static::make([]);
+        $table = $model->table;
+        $primaryKey = $model->primaryKey;
+        Builder::macro('whereTranslation', function ($column, $operator, $query = null) use ($table, $primaryKey) {
+            $locale = \App::getLocale();
+            if ($locale == config('app.fallback_locale')) {
+                return $this->where($column, $operator, $query);
+            }
+
+            if (count(func_get_args()) < 3) {
+                $query = $operator;
+                $operator = "=";
+            }
+
+            $subQuery = \DB::table("translations_$locale")
+                ->select('translation')
+                ->where('related_table', $table)
+                ->where('related_field', "$column")
+                ->whereColumn('related_id', "{$table}.{$primaryKey}")
+                ->take(1);
+
+            // @todo: update this to a whereRaw or something equivalent if possible
+            $this->whereRaw(
+                "(" . $subQuery->toSql() . ") $operator ?",
+                array_merge($subQuery->getBindings(), [$query])
+            );
+        });
     }
 
     public function shouldTranslateTo($locale)
