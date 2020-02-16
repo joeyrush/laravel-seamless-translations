@@ -184,7 +184,13 @@ trait Translatable
         $app = Container::getInstance();
         if (! $app->has('tables')) {
             $tables = Cache::rememberForever('schema.tables', function () {
-                return array_map('reset', DB::select('SHOW TABLES'));
+                try {
+                    $rawTables = DB::select('SHOW TABLES'); // mysql
+                } catch (\Illuminate\Database\QueryException $e) {
+                    $rawTables = DB::select('SELECT name FROM sqlite_master'); // sqlite
+                }
+
+                return array_map('reset', $rawTables);
             });
 
             $app->bind('tables', function () use ($tables) {
