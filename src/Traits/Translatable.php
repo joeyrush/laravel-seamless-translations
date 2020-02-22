@@ -94,6 +94,7 @@ trait Translatable
             return true;
         }
 
+        $translatedFields = [];
         foreach ($model->translatable as $field) {
             if (!isset($model->$field)) {
                 continue;
@@ -109,9 +110,13 @@ trait Translatable
                 'related_id' => $model->{$model->primaryKey},
                 'translation' => $model->$field
             ]);
+
+            $translatedFields[] = $field;
         }
 
-        $model->withoutTranslations()->refresh();
+        foreach ($model->fresh()->attributes as $attribute => $value) {
+            $model->setAttribute($attribute, in_array($attribute, $translatedFields) ? $value : $model->$attribute);
+        }
 
         Cache::forget("translations_$locale");
 
