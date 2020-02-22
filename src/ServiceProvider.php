@@ -30,9 +30,9 @@ class ServiceProvider extends BaseProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
-        $router = $this->app['router'];
-        $router->pushMiddlewareToGroup('web', CheckLocale::class);
+        //$this->loadRoutesFrom(__DIR__ . '/routes.php');
+        //$router = $this->app['router'];
+        //$router->pushMiddlewareToGroup('web', CheckLocale::class);
 
         $timestamp = date('Y_m_d_His');
         $this->publishes([

@@ -2,4 +2,4 @@
 
 use JoeyRush\SeamlessTranslations\Controllers\LocalesController;
 
-Route::middleware('web')->get('/locale/{locale}', LocalesController::class . '@switch');
+Route::middleware('web')->get('/locale/{locale}', LocalesController::class . '@switch')->name('locales.switch');
